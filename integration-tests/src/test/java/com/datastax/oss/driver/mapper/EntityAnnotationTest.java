@@ -26,17 +26,17 @@ import java.io.IOException;
 import javax.tools.StandardLocation;
 import org.junit.Test;
 
-public class ProductDaoTest {
+public class EntityAnnotationTest {
 
   private static final String PACKAGE_NAME = "com.datastax.oss.driver.mapper.model.inventory";
 
   @Test
-  public void should_generate_product_dao_impl() throws IOException {
+  public void should_generate_product_helper_based_on_entity_annotation() throws IOException {
     // given
     String sourceFileLocation =
-        "src/test/java/com/datastax/oss/driver/mapper/model/inventory/ProductDao.java";
+        "src/test/java/com/datastax/oss/driver/mapper/model/inventory/Product.java";
     String generatedSourceFileLocation =
-        this.getClass().getResource("/annotation-processor/ProductDao_Impl_Expected").getPath();
+        this.getClass().getResource("/annotation-processor/Product_Helper_Expected").getPath();
 
     // when
     Compilation compilation =
@@ -44,15 +44,41 @@ public class ProductDaoTest {
             .withProcessors(new MapperProcessor())
             .compile(
                 JavaFileObjects.forSourceLines(
-                    PACKAGE_NAME + ".ProductDao", loadLinesFromSourceFile(sourceFileLocation)));
+                    PACKAGE_NAME + ".Product", loadLinesFromSourceFile(sourceFileLocation)));
 
     // then
     assertThat(compilation).succeededWithoutWarnings();
     assertThat(compilation)
-        .generatedFile(StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "ProductDao_Impl.java")
+        .generatedFile(StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "Product_Helper.java")
         .hasSourceEquivalentTo(
             JavaFileObjects.forSourceLines(
-                PACKAGE_NAME + "ProductDao_Impl_Expected",
+                PACKAGE_NAME + "Product_Helper_Expected",
+                loadLinesFromSourceFile(generatedSourceFileLocation)));
+  }
+
+  @Test
+  public void should_generate_dimensions_helper_based_on_entity_annotation() throws IOException {
+    // given
+    String sourceFileLocation =
+        "src/test/java/com/datastax/oss/driver/mapper/model/inventory/Dimensions.java";
+    String generatedSourceFileLocation =
+        this.getClass().getResource("/annotation-processor/Dimensions_Helper_Expected").getPath();
+
+    // when
+    Compilation compilation =
+        javac()
+            .withProcessors(new MapperProcessor())
+            .compile(
+                JavaFileObjects.forSourceLines(
+                    PACKAGE_NAME + ".Dimensions", loadLinesFromSourceFile(sourceFileLocation)));
+
+    // then
+    assertThat(compilation).succeededWithoutWarnings();
+    assertThat(compilation)
+        .generatedFile(StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "Dimensions_Helper.java")
+        .hasSourceEquivalentTo(
+            JavaFileObjects.forSourceLines(
+                PACKAGE_NAME + "Dimensions_Helper_Expected",
                 loadLinesFromSourceFile(generatedSourceFileLocation)));
   }
 }
