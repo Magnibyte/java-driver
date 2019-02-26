@@ -26,17 +26,22 @@ import java.io.IOException;
 import javax.tools.StandardLocation;
 import org.junit.Test;
 
-public class ProductDaoTest {
-
+public class MapperAnnotationTest {
   private static final String PACKAGE_NAME = "com.datastax.oss.driver.mapper.model.inventory";
 
   @Test
-  public void should_generate_product_dao_impl() throws IOException {
+  public void should_generate_mapper_impl_and_builder() throws IOException {
     // given
     String sourceFileLocation =
-        "src/test/java/com/datastax/oss/driver/mapper/model/inventory/ProductDao.java";
-    String generatedSourceFileLocation =
-        this.getClass().getResource("/annotation-processor/ProductDao_Impl_Expected").getPath();
+        "src/test/java/com/datastax/oss/driver/mapper/model/inventory/InventoryMapper.java";
+    String generatedSourceFileLocationMapperImpl =
+        this.getClass()
+            .getResource("/annotation-processor/InventoryMapper_Impl_Expected")
+            .getPath();
+    String generatedSourceFileLocationMapperBuilder =
+        this.getClass()
+            .getResource("/annotation-processor/InventoryMapperBuilder_Expected")
+            .getPath();
 
     // when
     Compilation compilation =
@@ -44,15 +49,26 @@ public class ProductDaoTest {
             .withProcessors(new MapperProcessor())
             .compile(
                 JavaFileObjects.forSourceLines(
-                    PACKAGE_NAME + ".ProductDao", loadLinesFromSourceFile(sourceFileLocation)));
+                    PACKAGE_NAME + ".InventoryMapper",
+                    loadLinesFromSourceFile(sourceFileLocation)));
 
     // then
     assertThat(compilation).succeededWithoutWarnings();
+
+    // and then generate InventoryMapper_Impl
     assertThat(compilation)
-        .generatedFile(StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "ProductDao_Impl.java")
+        .generatedFile(StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "InventoryMapper_Impl.java")
         .hasSourceEquivalentTo(
             JavaFileObjects.forSourceLines(
-                PACKAGE_NAME + "ProductDao_Impl_Expected",
-                loadLinesFromSourceFile(generatedSourceFileLocation)));
+                PACKAGE_NAME + "InventoryMapper_Impl_Expected",
+                loadLinesFromSourceFile(generatedSourceFileLocationMapperImpl)));
+
+    // and then generate InventoryMapperBuilder
+    assertThat(compilation)
+        .generatedFile(StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "InventoryMapperBuilder.java")
+        .hasSourceEquivalentTo(
+            JavaFileObjects.forSourceLines(
+                PACKAGE_NAME + "InventoryMapperBuilder_Expected",
+                loadLinesFromSourceFile(generatedSourceFileLocationMapperBuilder)));
   }
 }
