@@ -6,7 +6,6 @@ import static com.google.testing.compile.Compiler.javac;
 import com.datastax.oss.driver.internal.mapper.processor.MapperProcessor;
 import com.google.testing.compile.Compilation;
 import com.google.testing.compile.JavaFileObjects;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -14,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.tools.StandardLocation;
-
 import org.junit.Test;
 
 public class ProductDaoTest {
@@ -28,22 +26,26 @@ public class ProductDaoTest {
     String FQCNofSource = packageName + ".ProductDao";
     String sourceFileLocation =
         "src/test/java/com/datastax/oss/driver/mapper/model/inventory/ProductDao.java";
-    String outputSourceFileClassName = "ProductDao_Impl.java";
-
+    String generatedSourceFileClassName = "ProductDao_Impl.java";
+    String FQCNOfGeneratedSource = packageName + "ProductDao_Impl_Expected";
+    String generatedSourceFileLocation =
+        this.getClass().getResource("/annotation-processor/ProductDao_Impl_Expected").getPath();
 
     // when
     Compilation compilation =
         javac()
             .withProcessors(new MapperProcessor())
             .compile(
-                JavaFileObjects.forSourceLines(FQCNofSource, loadLinesFromSourceFile(sourceFileLocation)));
+                JavaFileObjects.forSourceLines(
+                    FQCNofSource, loadLinesFromSourceFile(sourceFileLocation)));
 
     // then
     assertThat(compilation).succeeded();
     assertThat(compilation)
-        .generatedFile(StandardLocation.SOURCE_OUTPUT, packageName, outputSourceFileClassName)
+        .generatedFile(StandardLocation.SOURCE_OUTPUT, packageName, generatedSourceFileClassName)
         .hasSourceEquivalentTo(
-            JavaFileObjects.forResource("annotation-processor/ProductDao_Impl_Expected.java"));
+            JavaFileObjects.forSourceLines(
+                FQCNOfGeneratedSource, loadLinesFromSourceFile(generatedSourceFileLocation)));
   }
 
   private List<String> loadLinesFromSourceFile(String path) throws IOException {
