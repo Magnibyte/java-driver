@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.tools.StandardLocation;
 import org.junit.Test;
 
 public class ProductDaoTest {
@@ -22,20 +23,24 @@ public class ProductDaoTest {
   public void should_generate_product_dao_impl() throws IOException {
     // given
     String FQCN = "com.datastax.oss.driver.mapper.model.inventory.ProductDao";
-    String classLocation =
+    String sourceFileLocation =
         "src/test/java/com/datastax/oss/driver/mapper/model/inventory/ProductDao.java";
+    String generatedSourceFileLocation =
+        "com/datastax/oss/driver/mapper/model/inventory/ProductDao_Impl.java";
 
     // when
     Compilation compilation =
         javac()
             .withProcessors(new MapperProcessor())
-            .compile(JavaFileObjects.forSourceLines(FQCN, loadLinesFromSourceFile(classLocation)));
+            .compile(
+                JavaFileObjects.forSourceLines(FQCN, loadLinesFromSourceFile(sourceFileLocation)));
 
     // then
     assertThat(compilation).succeeded();
-    //    assertThat(compilation)
-    //        .generatedSourceFile("ProductDao_Impl")
-    //        .hasSourceEquivalentTo(JavaFileObjects.forResource("GeneratedHelloWorld.java"));
+    assertThat(compilation)
+        .generatedFile(StandardLocation.SOURCE_OUTPUT, generatedSourceFileLocation)
+        .hasSourceEquivalentTo(
+            JavaFileObjects.forResource("annotation-processor/ProductDao_Impl_Expected.java"));
   }
 
   private List<String> loadLinesFromSourceFile(String path) throws IOException {
