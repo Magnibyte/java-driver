@@ -49,7 +49,8 @@ public class DaoAnnotationTest {
     // then
     assertThat(compilation).succeededWithoutWarnings();
     assertThat(compilation)
-        .generatedFile(StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "ProductDao_Impl.java")
+        .generatedFile(
+            StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "ProductDaoImpl__MapperGenerated.java")
         .hasSourceEquivalentTo(
             JavaFileObjects.forSourceLines(
                 PACKAGE_NAME + "ProductDao_Impl_Expected",

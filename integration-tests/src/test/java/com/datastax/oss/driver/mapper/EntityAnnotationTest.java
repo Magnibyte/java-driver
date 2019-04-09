@@ -49,7 +49,8 @@ public class EntityAnnotationTest {
     // then
     assertThat(compilation).succeededWithoutWarnings();
     assertThat(compilation)
-        .generatedFile(StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "Product_Helper.java")
+        .generatedFile(
+            StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "ProductHelper__MapperGenerated.java")
         .hasSourceEquivalentTo(
             JavaFileObjects.forSourceLines(
                 PACKAGE_NAME + "Product_Helper_Expected",
@@ -75,7 +76,8 @@ public class EntityAnnotationTest {
     // then
     assertThat(compilation).succeededWithoutWarnings();
     assertThat(compilation)
-        .generatedFile(StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "Dimensions_Helper.java")
+        .generatedFile(
+            StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "DimensionsHelper__MapperGenerated.java")
         .hasSourceEquivalentTo(
             JavaFileObjects.forSourceLines(
                 PACKAGE_NAME + "Dimensions_Helper_Expected",

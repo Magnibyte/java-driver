@@ -17,6 +17,6 @@ public class InventoryMapperBuilder {
 
   public InventoryMapper build() {
     MapperContext context = new MapperContext(session);
-    return new InventoryMapper_Impl(context);
+    return new InventoryMapperImpl__MapperGenerated(context);
   }
 }

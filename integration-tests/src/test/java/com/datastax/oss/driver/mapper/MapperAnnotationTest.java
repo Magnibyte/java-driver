@@ -57,7 +57,10 @@ public class MapperAnnotationTest {
 
     // and then generate InventoryMapper_Impl
     assertThat(compilation)
-        .generatedFile(StandardLocation.SOURCE_OUTPUT, PACKAGE_NAME, "InventoryMapper_Impl.java")
+        .generatedFile(
+            StandardLocation.SOURCE_OUTPUT,
+            PACKAGE_NAME,
+            "InventoryMapperImpl__MapperGenerated.java")
         .hasSourceEquivalentTo(
             JavaFileObjects.forSourceLines(
                 PACKAGE_NAME + "InventoryMapper_Impl_Expected",
